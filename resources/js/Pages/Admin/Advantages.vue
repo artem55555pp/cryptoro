@@ -2,18 +2,20 @@
     <Head title="Управление преимуществами" />
     
     <div class="admin-layout">
-        <aside class="sidebar">
+        <div v-if="sidebarOpen" class="sidebar-overlay" @click="closeSidebar"></div>
+        
+        <aside class="sidebar" :class="{ 'sidebar-open': sidebarOpen }">
             <div class="sidebar-header">
                 <h2>Админка</h2>
             </div>
             <nav class="sidebar-nav">
-                <a href="/admin" class="nav-item" :class="{ active: $page.url === '/admin' }">
+                <a href="/admin" class="nav-item" :class="{ active: $page.url === '/admin' }" @click="closeSidebar">
                     Главная
                 </a>
-                <a href="/admin/menu-items" class="nav-item" :class="{ active: $page.url.startsWith('/admin/menu-items') }">
+                <a href="/admin/menu-items" class="nav-item" :class="{ active: $page.url.startsWith('/admin/menu-items') }" @click="closeSidebar">
                     Пункты меню
                 </a>
-                <a href="/admin/advantages" class="nav-item" :class="{ active: $page.url.startsWith('/admin/advantages') }">
+                <a href="/admin/advantages" class="nav-item" :class="{ active: $page.url.startsWith('/admin/advantages') }" @click="closeSidebar">
                     Преимущества
                 </a>
             </nav>
@@ -26,6 +28,11 @@
 
         <main class="admin-content">
             <div class="content-header">
+                <button class="burger-menu" @click="toggleSidebar">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3 12H21M3 6H21M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </button>
                 <h1>Управление преимуществами</h1>
                 <button @click="showAddForm = !showAddForm" class="btn-primary">
                     {{ showAddForm ? 'Отмена' : '+ Добавить преимущество' }}
@@ -177,6 +184,15 @@ const showAddForm = ref(false);
 const editingId = ref(null);
 const draggedIndex = ref(null);
 const dragOverIndex = ref(null);
+const sidebarOpen = ref(false);
+
+const toggleSidebar = () => {
+    sidebarOpen.value = !sidebarOpen.value;
+};
+
+const closeSidebar = () => {
+    sidebarOpen.value = false;
+};
 
 const sortedAdvantages = computed(() => {
     return [...props.advantages].sort((a, b) => a.order - b.order);
@@ -306,6 +322,18 @@ $color-danger: #f53003;
     display: flex;
     min-height: 100vh;
     background: $color-bg;
+    position: relative;
+}
+
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 998;
 }
 
 .sidebar {
@@ -314,6 +342,8 @@ $color-danger: #f53003;
     color: $color-white;
     display: flex;
     flex-direction: column;
+    transition: transform 0.3s ease;
+    z-index: 999;
 }
 
 .sidebar-header {
@@ -388,6 +418,27 @@ $color-danger: #f53003;
         margin: 0;
         color: $color-text;
         font-size: 28px;
+        flex: 1;
+    }
+}
+
+.burger-menu {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    color: $color-text;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.3s;
+
+    &:hover {
+        opacity: 0.7;
+    }
+
+    svg {
+        display: block;
     }
 }
 
@@ -608,13 +659,23 @@ $color-danger: #f53003;
 }
 
 @media (max-width: 768px) {
-    .admin-layout {
-        flex-direction: column;
+    .sidebar-overlay {
+        display: block;
     }
 
     .sidebar {
-        width: 100%;
-        order: 2;
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        transform: translateX(-100%);
+        height: 100vh;
+        overflow-y: auto;
+        width: 250px;
+
+        &.sidebar-open {
+            transform: translateX(0);
+        }
     }
 
     .sidebar-header {
@@ -622,16 +683,7 @@ $color-danger: #f53003;
     }
 
     .sidebar-nav {
-        display: flex;
-        flex-direction: row;
-        overflow-x: auto;
-        padding: 10px 0;
-        gap: 0;
-
-        .nav-item {
-            white-space: nowrap;
-            padding: 10px 15px;
-        }
+        padding: 20px 0;
     }
 
     .sidebar-footer {
@@ -640,13 +692,14 @@ $color-danger: #f53003;
 
     .admin-content {
         padding: 15px;
-        order: 1;
+        width: 100%;
+    }
+
+    .burger-menu {
+        display: flex;
     }
 
     .content-header {
-        flex-direction: column;
-        align-items: flex-start;
-
         h1 {
             font-size: 24px;
         }
