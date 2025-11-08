@@ -735,10 +735,10 @@ body h2 {
 
     .main__second-item {
         min-height: auto;
+    }
 
-        &__item-box {
-            margin-bottom: 15px;
-        }
+    .main__second__item-box {
+        margin-bottom: 15px;
     }
 
     .main__second-block {
@@ -800,6 +800,25 @@ body h2 {
         p {
             font-size: 18px;
         }
+    }
+}
+
+@media (max-width: 830px) {
+    .main__row-mail a {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 690px) {
+    .main__item__box-block {
+        justify-content: center;
+        margin-top: 15px;
+        width: 100%;
+    }
+
+    .main__item-desc {
+        margin-top: 15px;
+        margin-bottom: 15px;
     }
 }
 
@@ -1031,6 +1050,12 @@ body h2 {
         padding: 5px 10px;
         font-size: 13px;
         transform: translateY(0);
+    }
+}
+
+@media (max-width: 370px) {
+    .main__row-mail a {
+        margin-top: 10px;
     }
 }
 </style>

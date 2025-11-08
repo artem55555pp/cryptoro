@@ -299,7 +299,7 @@ h2 {
     }
 
     .about__item-box-desc {
-        margin: 0;
+        margin: 15px 0 0 0;
     }
 }
 
