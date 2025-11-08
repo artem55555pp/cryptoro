@@ -124,10 +124,10 @@ h2 {
 }
 .about__item:nth-child(1) .about-block:nth-child(1) {
     width: 100%;
-    min-height: 58vh;
+    height: 493px;
     background-image: url(/assets/abF.png);
     background-size: cover;
-    background-position: center;
+    background-position: right bottom;
     background-repeat: no-repeat;
     padding: 25px;
     margin-top: 10px;
@@ -136,10 +136,10 @@ h2 {
 }
 .about__item:nth-child(1) .about-block:nth-child(2) {
     width: 100%;
-    min-height: 58vh;
+    height: 493px;
     background-image: url(/assets/abT.png);
     background-size: cover;
-    background-position: center;
+    background-position: right bottom;
     background-repeat: no-repeat;
     padding: 25px;
     margin-top: 10px;
@@ -148,10 +148,10 @@ h2 {
 }
 .about__item:nth-child(3) .about-block:nth-child(1) {
     width: 100%;
-    min-height: 58vh;
+    height: 493px;
     background-image: url(/assets/abTh.png);
     background-size: cover;
-    background-position: center;
+    background-position: right bottom;
     background-repeat: no-repeat;
     padding: 25px;
     margin-top: 10px;
@@ -160,10 +160,10 @@ h2 {
 }
 .about__item:nth-child(3) .about-block:nth-child(2) {
     width: 100%;
-    min-height: 58vh;
+    height: 493px;
     background-image: url(/assets/abFo.png);
     background-size: cover;
-    background-position: center;
+    background-position: right bottom;
     background-repeat: no-repeat;
     padding: 25px;
     margin-top: 10px;
@@ -182,25 +182,34 @@ h2 {
     padding: 12px 15px;
 }
 .about__item-box p {
-    font-size: 22px;
+    font-size: 31px;
     color: #272B37;
     line-height: 26px;
 }
 .about__sec-block {
     background-image: url(/assets/abFi.png);
     background-size: cover;
-    background-position: center;
+    background-position: right bottom;
     background-repeat: no-repeat;
     padding: 30px;
     margin-top: 10px;
     position: relative;
     border-radius: 20px;
 }
+
+.about__item:nth-child(2) .about__sec-block:nth-child(1) {
+    height: 234px;
+}
+
+.about__item:nth-child(2) .about__sec-block:nth-child(3) {
+    height: 234px;
+}
 .about__item-box-desc {
-    font-size: 16px;
+    font-size: 21px;
     color: #272B37;
     line-height: 20px;
     margin: 20px 0 0 75px;
+    max-width: 668px;
 }
 .about-bg {
     background-image: url(/assets/Rectangle 2340 1.png);
@@ -210,8 +219,9 @@ h2 {
     border-radius: 30px;
     display: flex;
     justify-content: center;
+    align-items: center;
     margin-top: 10px;
-    padding-block: 24vh;
+    height: 508px;
 }
 .about-bg h3 {
     position: relative;
@@ -242,15 +252,24 @@ h2 {
     .about__item:nth-child(3) .about-block:nth-child(1),
     .about__item:nth-child(3) .about-block:nth-child(2),
     .about__sec-block{
-        min-height: unset;
+        height: auto;
+        min-height: 200px;
         background-image: unset;
         background-color: #E9EDF3;
+    }
+    .about__item:nth-child(2) .about__sec-block:nth-child(1),
+    .about__item:nth-child(2) .about__sec-block:nth-child(3) {
+        height: auto;
+    }
+    .about-bg {
+        height: auto;
+        min-height: 200px;
     }
     .about__item-box-desc {
         margin: 0;
     }
     .about-bg {
-        padding-block: 10vh
+        padding-block: 10vh;
     }
     .about-bg h3 {
         font-size: 25px;
@@ -268,16 +287,38 @@ h2 {
         padding: 9px 12px;
     }
     .about__item-box p {
-        font-size: 18px;
+        font-size: 20px;
+        line-height: 1.3;
     }
     .about__item-box p br {
         display: none;
     }
     .about__item-box-desc {
-        font-size: 12px;
+        font-size: 14px;
+        line-height: 1.4;
+        margin: 15px 0 0 0;
+        max-width: 100%;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
     }
     .about__item-box-desc br {
         display: none;
+    }
+    .about__item:nth-child(1) .about-block:nth-child(1),
+    .about__item:nth-child(1) .about-block:nth-child(2),
+    .about__item:nth-child(3) .about-block:nth-child(1),
+    .about__item:nth-child(3) .about-block:nth-child(2),
+    .about__sec-block {
+        height: auto;
+        min-height: 200px;
+    }
+    .about__item:nth-child(2) .about__sec-block:nth-child(1),
+    .about__item:nth-child(2) .about__sec-block:nth-child(3) {
+        height: auto;
+    }
+    .about-bg {
+        height: auto;
+        min-height: 200px;
     }
     .about-bg h3 {
         font-size: 16px;
