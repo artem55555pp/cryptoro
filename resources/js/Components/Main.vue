@@ -300,15 +300,20 @@ $transition: 0.3s ease;
 .main__item__box__img-block-fi,
 .main__item__box__img-block-si {
     background-color: $color-bg;
-    padding: 15px;
+    padding: 10px;
     border-radius: 50%;
     border: 2px solid $color-white;
     margin-left: -10px;
     position: relative;
 
     img {
-        width: 25px;
-        height: 25px;
+        width: 48px;
+        height: 48px;
+
+        @media (max-width: 1600px) {
+            width: 28px;
+            height: 28px;
+        }
     }
 }
 
@@ -856,8 +861,8 @@ body h2 {
         padding: 6px;
 
         img {
-            width: 18px;
-            height: 18px;
+            width: 34px;
+            height: 34px;
         }
     }
 
