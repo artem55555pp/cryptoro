@@ -82,16 +82,12 @@ body {
 nav ul {
     display: flex;
     align-items: center;
-    gap: 25px;
     background-color: #E9EDF3;
     padding: 12px 20px;
     border-radius: 50px;
     flex-wrap: wrap;
 }
 
-.nav__first-child {
-    background-color: #17BE79;
-}
 
 .nav__first-child a {
     font-size: 16px;
@@ -106,7 +102,16 @@ nav ul li a {
 nav ul li {
     cursor: pointer;
     padding: 10px 25px;
+    margin-right: 10px;
     border-radius: 50px;
+}
+
+nav ul li:last-child {
+    margin-right: 0;
+}
+
+.nav__first-child {
+    background-color: #17BE79;
 }
 
 .header__item:last-child {
@@ -119,11 +124,21 @@ nav ul li {
     background-color: #17BE79;
     border-radius: 50%;
     padding: 12px;
+    transition: background-color 0.3s ease;
+}
+
+.header__item:last-child a:hover {
+    background-color: #808080;
 }
 
 .header__icon {
     max-width: 100%;
     width: 16px;
+    transition: filter 0.3s ease;
+}
+
+.header__item:last-child a:hover .header__icon {
+    filter: brightness(0) invert(1);
 }
 
 .header__burger {
@@ -179,7 +194,7 @@ nav ul li {
 
     nav ul {
         flex-direction: column;
-        gap: 15px;
+        gap: 8px;
         padding: 0;
         background: none;
         align-items: flex-start;
