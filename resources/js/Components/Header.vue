@@ -60,7 +60,17 @@ const toggleMenu = () => {
     </div>
 </template>
 
-<style>
+<style lang="scss">
+// Variables
+$color-primary: #17BE79;
+$color-text: #272B37;
+$color-bg: #E9EDF3;
+$color-white: #fff;
+$color-hover: #808080;
+$border-radius-sm: 20px;
+$border-radius-round: 50px;
+$transition: 0.3s ease;
+
 body {
     max-width: 1920px;
     padding-inline: 20px;
@@ -80,75 +90,74 @@ body {
     width: 230px;
 }
 
-nav ul {
-    display: flex;
-    align-items: center;
-    background-color: #E9EDF3;
-    padding: 12px 20px;
-    border-radius: 50px;
-    flex-wrap: wrap;
+nav {
+    ul {
+        display: flex;
+        align-items: center;
+        background-color: $color-bg;
+        padding: 12px 20px;
+        border-radius: $border-radius-round;
+        flex-wrap: wrap;
+        gap: 4.5px;
+
+        li {
+            cursor: pointer;
+            padding: 10px 25px;
+            margin-right: 0;
+            border-radius: $border-radius-round;
+            transition: background-color $transition;
+
+            &:hover {
+                background-color: $color-primary;
+
+                a {
+                    color: $color-white;
+                }
+            }
+
+            a {
+                font-size: 16px;
+                color: $color-text;
+            }
+
+            &.nav__first-child {
+                background-color: $color-primary;
+
+                a {
+                    color: $color-white;
+                }
+            }
+        }
+    }
 }
 
+.header__item {
+    &:last-child {
+        display: flex;
+        gap: 10px;
+        align-items: center;
 
-.nav__first-child a {
-    font-size: 16px;
-    color: #fff;
-}
+        a {
+            background-color: $color-primary;
+            border-radius: $border-radius-round;
+            padding: 12px;
+            transition: background-color $transition;
 
-nav ul li a {
-    font-size: 16px;
-    color: #272B37;
-}
+            &:hover {
+                background-color: $color-hover;
 
-nav ul li {
-    cursor: pointer;
-    padding: 10px 25px;
-    margin-right: 36px;
-    border-radius: 50px;
-    transition: background-color 0.3s ease;
-}
-
-nav ul li:hover {
-    background-color: #17BE79;
-}
-
-nav ul li:hover a {
-    color: #fff;
-}
-
-nav ul li:last-child {
-    margin-right: 0;
-}
-
-.nav__first-child {
-    background-color: #17BE79;
-}
-
-.header__item:last-child {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-}
-
-.header__item:last-child a {
-    background-color: #17BE79;
-    border-radius: 50%;
-    padding: 12px;
-    transition: background-color 0.3s ease;
-}
-
-.header__item:last-child a:hover {
-    background-color: #808080;
+                .header__icon {
+                    filter: brightness(0) invert(1);
+                }
+            }
+        }
+    }
 }
 
 .header__icon {
     max-width: 100%;
     width: 16px;
-    transition: filter 0.3s ease;
-}
-
-.header__item:last-child a:hover .header__icon {
-    filter: brightness(0) invert(1);
+    transition: filter $transition;
 }
 
 .header__burger {
@@ -156,14 +165,14 @@ nav ul li:last-child {
     flex-direction: column;
     gap: 4px;
     cursor: pointer;
-}
 
-.header__burger span {
-    display: block;
-    width: 25px;
-    height: 3px;
-    background: #272B37;
-    border-radius: 2px;
+    span {
+        display: block;
+        width: 25px;
+        height: 3px;
+        background: $color-text;
+        border-radius: 2px;
+    }
 }
 
 .header__menu-container {
@@ -198,40 +207,42 @@ nav ul li:last-child {
         display: flex;
         flex-direction: column;
         width: 100%;
-        background: #E9EDF3;
-        border-radius: 20px;
+        background: $color-bg;
+        border-radius: $border-radius-sm;
         margin-top: 10px;
         align-items: flex-start;
         overflow: hidden;
         max-height: 0;
         padding: 0 15px;
         transition: max-height 0.4s ease, padding 0.4s ease;
-    }
 
-    .header__menu-container.open {
-        max-height: 500px;
-        padding: 15px;
+        &.open {
+            max-height: 500px;
+            padding: 15px;
+        }
     }
 
     .header__burger {
         display: flex;
     }
 
-    nav ul li.nav__first-child {
-        transition: background 0.4s ease, color 0.4s ease;
-    }
+    nav {
+        ul {
+            flex-direction: column;
+            gap: 8px;
+            padding: 0;
+            background: none;
+            align-items: flex-start;
 
-    nav ul {
-        flex-direction: column;
-        gap: 8px;
-        padding: 0;
-        background: none;
-        align-items: flex-start;
-    }
+            li {
+                padding: 8px 15px;
+                margin-right: 0;
 
-    nav ul li {
-        padding: 8px 15px;
-        margin-right: 0;
+                &.nav__first-child {
+                    transition: background 0.4s ease, color 0.4s ease;
+                }
+            }
+        }
     }
 
     .header__icons {
@@ -240,21 +251,28 @@ nav ul li:last-child {
         margin-top: 10px;
     }
 }
+
 @media (max-width: 500px) {
-    .nav__first-child a {
-        font-size: 14px;
+    nav ul li {
+        a {
+            font-size: 14px;
+        }
+
+        &.nav__first-child {
+            padding: 2px 15px;
+
+            a {
+                font-size: 14px;
+            }
+        }
     }
-    nav ul li a {
-        font-size: 14px;
-    }
+
     .header__icons {
         margin: 0;
     }
+
     .header__icon {
         width: 12px;
-    }
-    .nav__first-child {
-        padding: 2px 15px;
     }
 }
 </style>
