@@ -311,6 +311,7 @@ h2 {
     .about__sec-block {
         height: auto;
         min-height: 200px;
+        padding-bottom: 54px;
     }
     .about__item:nth-child(2) .about__sec-block:nth-child(1),
     .about__item:nth-child(2) .about__sec-block:nth-child(3) {
