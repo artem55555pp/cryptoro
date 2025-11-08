@@ -106,6 +106,8 @@ const backgroundImages = [
 h2 {
     font-size: 31px;
     color: #272B37;
+    line-height: 1.3;
+    margin-top: 40px;
 }
 .about__row {
     margin-top: 40px;
@@ -208,7 +210,7 @@ h2 {
     font-size: 21px;
     color: #272B37;
     line-height: 20px;
-    margin: 20px 0 0 75px;
+    margin: 35px 0 0 75px;
     max-width: 668px;
 }
 .about-bg {
@@ -241,6 +243,7 @@ h2 {
     h2 {
         font-size: 25px;
         text-align: center;
+        margin-top: 50px;
     }
     .about__item:nth-child(1),
     .about__item:nth-child(2),
@@ -279,6 +282,7 @@ h2 {
 @media (max-width: 500px) {
     h2 {
         font-size: 20px;
+        margin-top: 20px;
     }
     .about__row {
         margin-top: 20px;

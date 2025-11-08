@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue'
+import { Link } from '@inertiajs/vue3'
 
 const props = defineProps({
     menuItems: {
@@ -23,9 +24,9 @@ const toggleMenu = () => {
 <template>
     <div class="header__row">
         <div class="header__item-logo">
-            <a href="#">
+            <Link href="/">
                 <img src="/assets/logo.svg" alt="Logo" class="header__logo">
-            </a>
+            </Link>
         </div>
 
         <!-- Бургер -->
@@ -102,8 +103,17 @@ nav ul li a {
 nav ul li {
     cursor: pointer;
     padding: 10px 25px;
-    margin-right: 10px;
+    margin-right: 36px;
     border-radius: 50px;
+    transition: background-color 0.3s ease;
+}
+
+nav ul li:hover {
+    background-color: #17BE79;
+}
+
+nav ul li:hover a {
+    color: #fff;
 }
 
 nav ul li:last-child {
@@ -164,6 +174,25 @@ nav ul li:last-child {
     width: 73%;
 }
 
+@media (max-width: 1500px) {
+    nav ul li {
+        padding: 8px 12px;
+        margin-right: 12px;
+    }
+
+    body h2 {
+        margin-top: 66px;
+        line-height: 1;
+    }
+}
+
+@media (max-width: 1300px) {
+    nav ul li {
+        padding: 8px 8px;
+        margin-right: 12px;
+    }
+}
+
 @media (max-width: 1170px) {
     .header__menu-container {
         display: flex;
@@ -198,6 +227,11 @@ nav ul li:last-child {
         padding: 0;
         background: none;
         align-items: flex-start;
+    }
+
+    nav ul li {
+        padding: 8px 15px;
+        margin-right: 0;
     }
 
     .header__icons {

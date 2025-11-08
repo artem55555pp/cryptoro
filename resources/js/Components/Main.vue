@@ -242,13 +242,14 @@
 }
 
 .main__item__box-title {
-    font-size: 30px;
+    font-size: 45px;
     line-height: 5px;
     color: #272B37;
+    font-weight: 700;
 }
 
 .main__item__box-desc {
-    font-size: 15px;
+    font-size: 25px;
     line-height: 30px;
     color: #272B37;
     margin-top: 10px;
@@ -336,14 +337,14 @@
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    gap: 5px;
+    gap: 10px;
     flex: 1;
     justify-content: flex-end;
     align-content: flex-end;
 }
 
 .main__second__block-box {
-    width: calc(50% - 2.5px);
+    width: calc(50% - 5px);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -638,27 +639,38 @@ body h2 {
     .main__second-item{
         width: 100%;
         height: auto;
+        max-width: 100%;
+        box-sizing: border-box;
     }
     .main__row-fl {
         gap: 10px;
+        width: 100%;
+        box-sizing: border-box;
     }
     .main__item {
         min-height: auto;
     }
     .main__item-box {
-        margin-top: 20vh;
+        margin-top: 20px;
     }
     .main__item__h-box::after {
-        top: 11em;
+        top: 0;
         left: 0;
         right: unset;
         position: relative;
+        display: block;
+        margin: 15px auto 0;
+        text-align: center;
+        transform: none;
     }
     .main__second-item {
         min-height: auto;
     }
     .main__second__item-box {
-        margin-bottom: 20vh;
+        margin-bottom: 15px;
+    }
+    .main__second-block {
+        gap: 10px;
     }
     .main__second__block-box {
         justify-content: center;
@@ -672,8 +684,15 @@ body h2 {
     }
 }
 @media (max-width: 768px) {
-    .main__item,
+    .main__item {
+        width: 100%;
+        height: auto;
+        min-width: 0;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
     .main__second-item {
+        width: 100%;
         height: auto;
         min-width: 0;
         max-width: 100%;
@@ -699,6 +718,7 @@ body h2 {
     .main__row__sl-item:nth-child(3),
     .main__row__sl-item:nth-child(4) {
         width: 49%;
+        height: auto;
     }
     .main__row__sl-item p {
         font-size: 18px;
