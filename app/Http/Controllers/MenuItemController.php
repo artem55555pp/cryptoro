@@ -49,6 +49,17 @@ class MenuItemController extends Controller
         $menuItem->delete();
         return redirect()->back()->with('success', 'Пункт меню удален');
     }
+
+    public function reorder(Request $request)
+    {
+        $items = $request->input('items', []);
+
+        foreach ($items as $item) {
+            MenuItem::where('id', $item['id'])->update(['order' => $item['order']]);
+        }
+
+        return redirect()->back()->with('success', 'Порядок пунктов меню обновлен');
+    }
 }
 
 

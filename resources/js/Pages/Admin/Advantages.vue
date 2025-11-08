@@ -71,6 +71,7 @@
                 <table class="data-table">
                     <thead>
                         <tr>
+                            <th style="width: 40px;"></th>
                             <th>ID</th>
                             <th>Название</th>
                             <th>Описание</th>
@@ -81,7 +82,22 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="item in advantages" :key="item.id">
+                        <tr 
+                            v-for="(item, index) in sortedAdvantages" 
+                            :key="item.id"
+                            :draggable="true"
+                            @dragstart="handleDragStart($event, index)"
+                            @dragover.prevent="handleDragOver($event, index)"
+                            @drop="handleDrop($event, index)"
+                            @dragend="handleDragEnd"
+                            :class="{ 'dragging': draggedIndex === index, 'drag-over': dragOverIndex === index }"
+                            class="draggable-row"
+                        >
+                            <td class="drag-handle">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M2 4H14M2 8H14M2 12H14" stroke="#666" stroke-width="2" stroke-linecap="round"/>
+                                </svg>
+                            </td>
                             <td>{{ item.id }}</td>
                             <td>
                                 <input
@@ -148,7 +164,7 @@
 
 <script setup>
 import { Head, router, usePage } from '@inertiajs/vue3';
-import { ref, reactive } from 'vue';
+import { ref, reactive, computed } from 'vue';
 
 const props = defineProps({
     advantages: Array,
@@ -159,6 +175,12 @@ const flash = page.props.flash;
 
 const showAddForm = ref(false);
 const editingId = ref(null);
+const draggedIndex = ref(null);
+const dragOverIndex = ref(null);
+
+const sortedAdvantages = computed(() => {
+    return [...props.advantages].sort((a, b) => a.order - b.order);
+});
 
 const newItem = reactive({
     title: '',
@@ -175,6 +197,54 @@ const editForm = reactive({
     order: 0,
     is_active: true,
 });
+
+const handleDragStart = (event, index) => {
+    draggedIndex.value = index;
+    event.dataTransfer.effectAllowed = 'move';
+    event.dataTransfer.setData('text/html', event.target);
+    event.target.style.opacity = '0.5';
+};
+
+const handleDragOver = (event, index) => {
+    event.preventDefault();
+    if (draggedIndex.value !== null && draggedIndex.value !== index) {
+        dragOverIndex.value = index;
+    }
+};
+
+const handleDrop = (event, dropIndex) => {
+    event.preventDefault();
+    
+    if (draggedIndex.value === null || draggedIndex.value === dropIndex) {
+        dragOverIndex.value = null;
+        return;
+    }
+
+    const items = [...sortedAdvantages.value];
+    const draggedItem = items[draggedIndex.value];
+    
+    items.splice(draggedIndex.value, 1);
+    items.splice(dropIndex, 0, draggedItem);
+    
+    const updatedOrders = items.map((item, index) => ({
+        id: item.id,
+        order: index + 1,
+    }));
+
+    router.post('/admin/advantages/reorder', { items: updatedOrders }, {
+        preserveScroll: true,
+        onSuccess: () => {
+            draggedIndex.value = null;
+            dragOverIndex.value = null;
+        },
+    });
+};
+
+const handleDragEnd = (event) => {
+    event.target.style.opacity = '';
+    draggedIndex.value = null;
+    dragOverIndex.value = null;
+};
 
 const addItem = () => {
     router.post('/admin/advantages', newItem, {
@@ -225,17 +295,23 @@ const logout = () => {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+$color-primary: #17BE79;
+$color-text: #272B37;
+$color-bg: #f5f5f5;
+$color-white: #fff;
+$color-danger: #f53003;
+
 .admin-layout {
     display: flex;
     min-height: 100vh;
-    background: #f5f5f5;
+    background: $color-bg;
 }
 
 .sidebar {
     width: 250px;
-    background: #272B37;
-    color: white;
+    background: $color-text;
+    color: $color-white;
     display: flex;
     flex-direction: column;
 }
@@ -243,11 +319,11 @@ const logout = () => {
 .sidebar-header {
     padding: 20px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
 
-.sidebar-header h2 {
-    margin: 0;
-    font-size: 20px;
+    h2 {
+        margin: 0;
+        font-size: 20px;
+    }
 }
 
 .sidebar-nav {
@@ -261,16 +337,16 @@ const logout = () => {
     color: rgba(255, 255, 255, 0.7);
     text-decoration: none;
     transition: all 0.3s;
-}
 
-.nav-item:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
-}
+    &:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: $color-white;
+    }
 
-.nav-item.active {
-    background: #17BE79;
-    color: white;
+    &.active {
+        background: $color-primary;
+        color: $color-white;
+    }
 }
 
 .sidebar-footer {
@@ -281,21 +357,23 @@ const logout = () => {
 .btn-logout {
     width: 100%;
     padding: 10px;
-    background: #f53003;
-    color: white;
+    background: $color-danger;
+    color: $color-white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     font-size: 14px;
-}
+    transition: background 0.3s;
 
-.btn-logout:hover {
-    background: #d42800;
+    &:hover {
+        background: #d42800;
+    }
 }
 
 .admin-content {
     flex: 1;
     padding: 30px;
+    overflow-x: auto;
 }
 
 .content-header {
@@ -303,39 +381,43 @@ const logout = () => {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 30px;
-}
+    flex-wrap: wrap;
+    gap: 15px;
 
-.content-header h1 {
-    margin: 0;
-    color: #272B37;
-    font-size: 28px;
+    h1 {
+        margin: 0;
+        color: $color-text;
+        font-size: 28px;
+    }
 }
 
 .btn-primary {
     padding: 10px 20px;
-    background: #17BE79;
-    color: white;
+    background: $color-primary;
+    color: $color-white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     font-size: 14px;
-}
+    transition: background 0.3s;
+    white-space: nowrap;
 
-.btn-primary:hover {
-    background: #15a86a;
+    &:hover {
+        background: #15a86a;
+    }
 }
 
 .form-card {
-    background: white;
+    background: $color-white;
     padding: 25px;
     border-radius: 10px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     margin-bottom: 20px;
-}
 
-.form-card h3 {
-    margin: 0 0 20px 0;
-    color: #272B37;
+    h3 {
+        margin: 0 0 20px 0;
+        color: $color-text;
+    }
 }
 
 .form-row {
@@ -348,13 +430,13 @@ const logout = () => {
 .form-group {
     display: flex;
     flex-direction: column;
-}
 
-.form-group label {
-    margin-bottom: 5px;
-    color: #272B37;
-    font-weight: 500;
-    font-size: 14px;
+    label {
+        margin-bottom: 5px;
+        color: $color-text;
+        font-weight: 500;
+        font-size: 14px;
+    }
 }
 
 .form-input {
@@ -363,11 +445,11 @@ const logout = () => {
     border-radius: 5px;
     font-size: 14px;
     font-family: inherit;
-}
 
-.form-input:focus {
-    outline: none;
-    border-color: #17BE79;
+    &:focus {
+        outline: none;
+        border-color: $color-primary;
+    }
 }
 
 .checkbox-label {
@@ -376,15 +458,15 @@ const logout = () => {
     gap: 8px;
     font-weight: normal;
     cursor: pointer;
-}
 
-.checkbox-label input {
-    width: auto;
-    cursor: pointer;
+    input {
+        width: auto;
+        cursor: pointer;
+    }
 }
 
 .table-card {
-    background: white;
+    background: $color-white;
     padding: 25px;
     border-radius: 10px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -394,24 +476,55 @@ const logout = () => {
 .data-table {
     width: 100%;
     border-collapse: collapse;
+    min-width: 900px;
+
+    th {
+        text-align: left;
+        padding: 12px;
+        background: $color-bg;
+        color: $color-text;
+        font-weight: 600;
+        border-bottom: 2px solid #ddd;
+    }
+
+    td {
+        padding: 12px;
+        border-bottom: 1px solid #eee;
+    }
+
+    tr:hover {
+        background: #f9f9f9;
+    }
 }
 
-.data-table th {
-    text-align: left;
-    padding: 12px;
-    background: #f5f5f5;
-    color: #272B37;
-    font-weight: 600;
-    border-bottom: 2px solid #ddd;
+.draggable-row {
+    cursor: move;
+    transition: background-color 0.2s;
+
+    &.dragging {
+        opacity: 0.5;
+    }
+
+    &.drag-over {
+        background-color: #e8f5e9;
+        border-top: 2px solid $color-primary;
+    }
 }
 
-.data-table td {
-    padding: 12px;
-    border-bottom: 1px solid #eee;
-}
+.drag-handle {
+    cursor: grab;
+    text-align: center;
+    padding: 8px !important;
+    width: 40px;
 
-.data-table tr:hover {
-    background: #f9f9f9;
+    &:active {
+        cursor: grabbing;
+    }
+
+    svg {
+        display: block;
+        margin: 0 auto;
+    }
 }
 
 .form-input-inline {
@@ -425,8 +538,8 @@ const logout = () => {
 
 .badge-success {
     padding: 4px 8px;
-    background: #17BE79;
-    color: white;
+    background: $color-primary;
+    color: $color-white;
     border-radius: 3px;
     font-size: 12px;
 }
@@ -434,7 +547,7 @@ const logout = () => {
 .badge-inactive {
     padding: 4px 8px;
     background: #ccc;
-    color: white;
+    color: $color-white;
     border-radius: 3px;
     font-size: 12px;
 }
@@ -442,6 +555,7 @@ const logout = () => {
 .action-buttons {
     display: flex;
     gap: 5px;
+    flex-wrap: wrap;
 }
 
 .btn-sm {
@@ -450,33 +564,35 @@ const logout = () => {
     border-radius: 3px;
     cursor: pointer;
     font-size: 12px;
+    transition: all 0.3s;
+    white-space: nowrap;
 }
 
 .btn-success {
-    background: #17BE79;
-    color: white;
-}
+    background: $color-primary;
+    color: $color-white;
 
-.btn-success:hover {
-    background: #15a86a;
+    &:hover {
+        background: #15a86a;
+    }
 }
 
 .btn-secondary {
     background: #ccc;
-    color: white;
-}
+    color: $color-white;
 
-.btn-secondary:hover {
-    background: #aaa;
+    &:hover {
+        background: #aaa;
+    }
 }
 
 .btn-danger {
-    background: #f53003;
-    color: white;
-}
+    background: $color-danger;
+    color: $color-white;
 
-.btn-danger:hover {
-    background: #d42800;
+    &:hover {
+        background: #d42800;
+    }
 }
 
 .alert {
@@ -490,6 +606,113 @@ const logout = () => {
     color: #155724;
     border: 1px solid #c3e6cb;
 }
+
+@media (max-width: 768px) {
+    .admin-layout {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        order: 2;
+    }
+
+    .sidebar-header {
+        padding: 15px;
+    }
+
+    .sidebar-nav {
+        display: flex;
+        flex-direction: row;
+        overflow-x: auto;
+        padding: 10px 0;
+        gap: 0;
+
+        .nav-item {
+            white-space: nowrap;
+            padding: 10px 15px;
+        }
+    }
+
+    .sidebar-footer {
+        padding: 15px;
+    }
+
+    .admin-content {
+        padding: 15px;
+        order: 1;
+    }
+
+    .content-header {
+        flex-direction: column;
+        align-items: flex-start;
+
+        h1 {
+            font-size: 24px;
+        }
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .table-card {
+        padding: 15px;
+    }
+
+    .data-table {
+        font-size: 14px;
+        min-width: 800px;
+
+        th, td {
+            padding: 8px;
+        }
+    }
+
+    .action-buttons {
+        flex-direction: column;
+        width: 100%;
+
+        .btn-sm {
+            width: 100%;
+        }
+    }
+}
+
+@media (max-width: 480px) {
+    .admin-content {
+        padding: 10px;
+    }
+
+    .content-header h1 {
+        font-size: 20px;
+    }
+
+    .form-card {
+        padding: 15px;
+    }
+
+    .table-card {
+        padding: 10px;
+    }
+
+    .data-table {
+        font-size: 12px;
+        min-width: 700px;
+
+        th, td {
+            padding: 6px;
+        }
+    }
+
+    .drag-handle {
+        width: 30px;
+        padding: 6px !important;
+
+        svg {
+            width: 12px;
+            height: 12px;
+        }
+    }
+}
 </style>
-
-

@@ -51,6 +51,17 @@ class AdvantageController extends Controller
         $advantage->delete();
         return redirect()->back()->with('success', 'Преимущество удалено');
     }
+
+    public function reorder(Request $request)
+    {
+        $items = $request->input('items', []);
+
+        foreach ($items as $item) {
+            Advantage::where('id', $item['id'])->update(['order' => $item['order']]);
+        }
+
+        return redirect()->back()->with('success', 'Порядок преимуществ обновлен');
+    }
 }
 
 

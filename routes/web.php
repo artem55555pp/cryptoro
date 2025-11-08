@@ -17,6 +17,8 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [AdminController::class, 'index'])->name('dashboard');
     
     Route::resource('menu-items', MenuItemController::class);
+    Route::post('/menu-items/reorder', [MenuItemController::class, 'reorder'])->name('menu-items.reorder');
     
     Route::resource('advantages', AdvantageController::class);
+    Route::post('/advantages/reorder', [AdvantageController::class, 'reorder'])->name('advantages.reorder');
 });
